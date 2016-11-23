@@ -5,6 +5,8 @@
 #include <map>
 #include <string>
 struct Entree;
+class Automate;
+
 struct Etat
 {
 	std::string nom;
@@ -28,8 +30,8 @@ struct Vehicule
 struct Client
 {
 	int index;
-	string pointDepart;
-	string pointArrive;
+	std::string pointDepart;
+	std::string pointArrive;
 	unsigned int groupe;
 };
 class Automate
