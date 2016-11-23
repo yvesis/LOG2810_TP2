@@ -1,6 +1,7 @@
 #include "Automate.h"
 #include <fstream>
 #include "dirent.h"
+#include <iomanip>
 
 #ifndef WIN32
 #include <sys/types.h>
@@ -15,6 +16,14 @@ Automate::Automate()
 
 Automate::~Automate()
 {
+	for (auto it = etats_.begin(); it != etats_.end(); it++)
+	{
+		Etat* s = it->second;
+		for (auto it2 = s->entrees.begin(); it2 != s->entrees.end(); it2++)
+			delete it2->second;
+
+		delete s;
+	}
 }
 
 /*
@@ -42,12 +51,16 @@ Automate * Automate::lireLexique(const char * fichier)
 
 		// On cree le premier etat ou noeud
 		auto nom = string(1,line[0]);
-		automate->etats_[nom] = { nom };
-		Etat* s0 = &automate->etats_[nom];
+		auto query = automate->arbre_.find(nom);
+		if (query == automate->arbre_.end())
+			automate->arbre_[nom] = new Etat { nom };
 
+		Etat* s0 = automate->arbre_[nom];
+		automate->etats_[nom] = s0;
 		// On lit chaque caractere
 		std::string chaine;
 		chaine = line[0];
+		Etat* s1;
 
 		for (int i = 1; i < line.size(); i++)
 		{
@@ -55,23 +68,23 @@ Automate * Automate::lireLexique(const char * fichier)
 			{
 				// Creation successif d'entree/sortie
 				chaine += line[i];
-				Entree e{ line[i] };
-				Etat* s1; // la sortie ou etat suivant
-
-				// Trouver si l'etat suivant existe deja sinon le creer
-				auto query = automate->etats_.find(chaine);
-				if (query == automate->etats_.end())
+				Entree* e;
+				auto query = s0->entrees.find(line[i]);
+				if (query == s0->entrees.end())
 				{
-					automate->etats_[chaine] = Etat{ chaine };
-					s1 = &automate->etats_[chaine];
+					s0->entrees[line[i]] = new Entree { line[i] };
+					e = s0->entrees[line[i]];
+					auto query2 = automate->etats_.find(chaine);
+					if (query2 == automate->etats_.end())
+					{
+						s1 = new Etat{ chaine };
+						automate->etats_[chaine] = s1;
+					}
+					e->sorties.push_back(automate->etats_[ chaine ]);// la sortie ou etat suivant
+					s0->entrees[line[i]] = e;
+					s0 = e->sorties[e->sorties.size() - 1];
 				}
-				else
-					s1 = &query->second;
-
-				// On associe l'etat ou sortie a l'entree
-				e.sorties.push_back(*s1); 
-				s0->entrees[line[i]] = e;
-				s0 = &automate->etats_[chaine]; // Pointer vers le nouvel etat
+				s0 = automate->etats_[chaine];
 			}
 			
 		}
@@ -114,28 +127,37 @@ std::vector<Automate*> Automate::creerLexique(const char * repertoire)
 std::ostream & operator<<(std::ostream & os, const Automate & a)
 {
 
-	printf("\n\n Affichage automate\n");
-	printf("\n_____________________\n");
-	printf("\n\n Etat   \tEntree   \tSortie\n");
+	os << "\n\n Affichage automate\n";
+	os << "\n_____________________\n";
+	os << "\n\n" << setw(10) << "Etat" << setw(20) << "Entree" << setw(30) << "Sortie\n";
 	int i = 0;
 	for (auto it = a.etats_.begin(); it != a.etats_.end(); it++)
 	{
-		Etat s = it->second;
-		printf("\n\n %-3d%-3s", i, s.nom.c_str());
-		for (auto it2 = s.entrees.begin(); it2 != s.entrees.end(); it2++)
-		{
-			Entree e = it2->second;
-			printf("%-3 %-3\t%-3c", e.valeur);
+		if (i && !((i) % 50)) system("pause");
 
-			for (auto it3 = e.sorties.begin(); it3 != e.sorties.end(); it3++)
+		Etat* s = it->second;
+
+		os << endl << endl << ++i << setw(10) << s->nom.c_str();
+		int j = 0;
+		for (auto it2 = s->entrees.begin(); it2 != s->entrees.end(); it2++)
+		{
+			Entree* e = it2->second;
+			os << setw(20 + 11 * j) << e->valeur;
+			j = 1;
+			int k = 0;
+			for (auto it3 = e->sorties.begin(); it3 != e->sorties.end(); it3++)
 			{
-				Etat s1 = *it3;
-				printf("%-3 %-3\t%-3\t%-3s\n", s1.nom.c_str());
+				Etat* s1 = *it3;
+				os << setw(30  ) << s1->nom.c_str() << endl;
+				//__debugbreak();
 			}
 		}
+		os << endl;
 
 	}
 
 	return os;
 }
+
+
 

@@ -8,15 +8,30 @@ struct Entree;
 struct Etat
 {
 	std::string nom;
-	std::map<char,Entree> entrees;
+	std::map<char,Entree*> entrees;
 
 };
 struct Entree
 {
 	char valeur;
-	std::vector<Etat> sorties;
+	std::vector<Etat*> sorties;
 };
 
+struct Vehicule
+{
+	int index;
+	Automate* zoneDepart;
+	unsigned int Occupation;
+	Etat* positionActuelle;
+};
+
+struct Client
+{
+	int index;
+	string pointDepart;
+	string pointArrive;
+	unsigned int groupe;
+};
 class Automate
 {
 public:
@@ -24,9 +39,15 @@ public:
 	static Automate* lireLexique(const char* fichier) ;
 	static std::vector<Automate*> creerLexique(const char* repertoire);
 	friend std::ostream& operator<<(std::ostream& os, const Automate& a);
+	unsigned int NbVehicules = 0;
 private:
 	Automate();
-	std::map<std::string,Etat> etats_;
+
+	// Utilisé pour parcourir l'automate
+	std::map<std::string,Etat*> arbre_;	
+	// Utilisé pour garder une trace sur tous les pointeurs d'etats
+	std::map<std::string, Etat*> etats_;
+
 	std::string fichier_;
 	int zoneIndex_;
 };
