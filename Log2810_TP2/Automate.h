@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+class Automate;
 struct Entree;
 struct Etat
 {
@@ -28,8 +29,8 @@ struct Vehicule
 struct Client
 {
 	int index;
-	string pointDepart;
-	string pointArrive;
+	std::string pointDepart;
+	std::string pointArrive;
 	unsigned int groupe;
 };
 class Automate
