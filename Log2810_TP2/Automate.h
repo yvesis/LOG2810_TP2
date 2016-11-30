@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+class Automate;
 struct Entree;
 class Automate;
 

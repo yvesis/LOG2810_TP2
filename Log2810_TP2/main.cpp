@@ -3,91 +3,82 @@
 #include <vector>
 using namespace std;
 
-void creerZones(vector<Automate*>& zones);
-void creerClients(vector<Client>& clients);
-void creerVehicules(vector<Vehicule>& vehicules);
+vector<Client> clients;
+vector<Vehicule> vehicules;
+void afficherMenu();
+
+char choix;
+bool choixA = false;
+bool choixB = false;
 
 int main()
 {
-	vector<Client> clients;
-	vector<Vehicule> vehicules;
-	vector <Automate*> zones;
-	char choix;
 	do
 	{
-		printf("\n\nEntrer un choix:");
-		cin >> choix;
-		choix = tolower(choix);
+		afficherMenu();
+
 		switch (choix)
 		{
-		case 'a':creerZones(zones);
-			break;
-		case 'b':break;
-		
-		default:
+		case 'a':
+		{
+			auto zones = Automate::creerLexique("zones");
+			for (auto it = zones.begin(); it != zones.end(); it++)
+			{
+				cout << **it;
+				//system("pause");
+				break;
+			}
+			//system("pause");
+
+			for (auto it = zones.begin(); it != zones.end(); it++)
+				delete (*it);
+			choixA = true;
 			break;
 		}
-	} while (choix != 'q');
+
+		case 'b':
+			if (!choixA)
+				std::cout << "Il faut choisir l'option A avant de choisir l'option B." << std::endl;
+			else
+			{
+				//equilibrerFlotte()
+				choixB = true;
+			}
+			break;
+
+		case 'c':
+			if (!choixB)
+				std::cout << "Il faut choisir l'option B avant de choisir l'option C." << std::endl;
+			else
+			{
+				// lancerSimulation()
+			
+			}
+			break;
+
+		case 'd': break;
+
+		default:
+			std::cout << std::endl << "Veuillez choisir une lettre entre a et d." << std::endl;
+		}
+		std::cout << std::endl;
+	} while (choix != 'd');
+
 
 	system("pause");
-
-	for (auto it = zones.begin(); it != zones.end(); it++)
-		delete (*it);
-
 	return 0;
-
 }
 
-void creerZones(vector<Automate*>& zones)
+void afficherMenu() 
 {
-	printf("\n\n 1) Lire repertoire "
-		"\n\n 2) Lire fichier");
+	std::cout << "-------------------Menu principal-------------------" << std::endl;
+	std::cout << "****************************************************" << std::endl;
+	std::cout << "(a) Creer les zones." << std::endl;
+	std::cout << "(b) Entrer les clients et les vehicules." << std::endl;
+	std::cout << "(c) Demarrer la simulation." << std::endl;
+	std::cout << "(d) Quitter." << std::endl;
+	std::cout << "****************************************************" << std::endl;
+	std::cout << "Votre choix:\0";
 
-	char choix = '\0';
-	do
-	{
-		printf("\n\nChoisir 1 ou 2: ");
-		scanf_s(" %c", &choix);
-
-	} while (choix != '1' && choix != '2');
-	
-	char chemin[255];
-	printf("\n\n Entrer le chemin du");
-
-	if (choix == '1')
-	{
-		printf(" repertoire: ");
-		scanf_s(" %s", chemin);
-
-		zones = Automate::creerLexique(chemin);
-	}
-	else
-	{
-		printf(" fichier: ");
-		scanf_s(" %s", chemin);
-		zones.push_back(Automate::lireLexique(chemin));
-
-	}
-
-	printf("\n\n Zones et lexiques créées!"
-		   "\n\n Afficher le lexique? (o/n)?");
-	scanf_s(" %c", &choix);
-
-	if (tolower(choix) == 'o')
-	{
-		for (auto it = zones.begin(); it != zones.end(); it++)
-		{
-			cout << **it;
-			system("pause");
-		}
-	}
-
-}
-
-void creerClients(vector<Client>& clients)
-{
-}
-
-void creerVehicules(vector<Vehicule>& vehicules)
-{
+	cin >> choix;
 }
