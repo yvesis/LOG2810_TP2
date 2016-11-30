@@ -26,12 +26,13 @@ int main()
 			{
 				cout << **it;
 				//system("pause");
+				break;
 			}
 			//system("pause");
 
-			//for (auto it = zones.begin(); it != zones.end(); it++)
-			//	delete (*it);
-			afficherMenu();
+			for (auto it = zones.begin(); it != zones.end(); it++)
+				delete (*it);
+			choixA = true;
 			break;
 		}
 
@@ -41,7 +42,7 @@ int main()
 			else
 			{
 				//equilibrerFlotte()
-				choixA = true;
+				choixB = true;
 			}
 			break;
 
@@ -51,7 +52,7 @@ int main()
 			else
 			{
 				// lancerSimulation()
-				choixB = true;
+			
 			}
 			break;
 
