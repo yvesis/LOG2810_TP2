@@ -4,30 +4,47 @@
 #include <vector>
 #include <map>
 #include <string>
-class Automate;
+class Lexique;
 struct Entree;
-class Automate;
+class Lexique;
 
+/*
+	Represente une chaine de caractere reconnue mais pas forcement acceptee
+*/
 struct Etat
 {
+	// Chaine des caracteres definissant l'etat
 	std::string nom;
+	// Les entrees reconnues
 	std::map<char,Entree*> entrees;
+	// Etat final?
+	bool final;
 
 };
+/*
+	Represente un caractere du zip code. Fait le lien avec un etat donne
+*/
 struct Entree
 {
 	char valeur;
+	// Les etats suivants
 	std::vector<Etat*> sorties;
 };
 
+/*
+	Structure vehicule
+*/
 struct Vehicule
 {
 	int index;
-	Automate* zoneDepart;
+	Lexique* zoneDepart;
 	unsigned int Occupation;
 	Etat* positionActuelle;
 };
 
+/*
+	Structure client
+*/
 struct Client
 {
 	int index;
@@ -35,16 +52,20 @@ struct Client
 	std::string pointArrive;
 	unsigned int groupe;
 };
-class Automate
+
+/*
+	Represente un automate pouvant reconnaitre un Zip code
+*/
+class Lexique
 {
 public:
-	~Automate();
-	static Automate* lireLexique(const char* fichier) ;
-	static std::vector<Automate*> creerLexique(const char* repertoire);
-	friend std::ostream& operator<<(std::ostream& os, const Automate& a);
+	~Lexique();
+	static Lexique* lireLexique(const char* fichier) ;
+	static std::vector<Lexique*> creerLexique(const char* repertoire);
+	friend std::ostream& operator<<(std::ostream& os, const Lexique& a);
 	unsigned int NbVehicules = 0;
 private:
-	Automate();
+	Lexique();
 
 	// Utilisé pour parcourir l'automate
 	std::map<std::string,Etat*> arbre_;	

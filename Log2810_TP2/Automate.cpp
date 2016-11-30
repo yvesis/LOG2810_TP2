@@ -9,12 +9,12 @@
 
 using namespace std;
 
-Automate::Automate()
+Lexique::Lexique()
 {
 }
 
 
-Automate::~Automate()
+Lexique::~Lexique()
 {
 	for (auto it = etats_.begin(); it != etats_.end(); it++)
 	{
@@ -33,7 +33,7 @@ Automate::~Automate()
 	Remarque : L'appelant de cette fonction doit liberer la
 	ressource creee.
 */
-Automate * Automate::lireLexique(const char * fichier)
+Lexique * Lexique::lireLexique(const char * fichier)
 {
 	auto file = ifstream(fichier);
 
@@ -42,7 +42,7 @@ Automate * Automate::lireLexique(const char * fichier)
 		printf("\nLe fichier n'existe pas!\n");
 		return nullptr;
 	}
-	Automate* automate = new Automate(); // Liberer la ressource dans le main
+	Lexique* automate = new Lexique(); // Liberer la ressource dans le main
 	while (!ws(file).eof())
 	{
 		// On lit ligne par ligne
@@ -99,9 +99,9 @@ Automate * Automate::lireLexique(const char * fichier)
 	Remarque : L'appelant de cette fonction doit liberer les
 	ressources creees.
 */
-std::vector<Automate*> Automate::creerLexique(const char * repertoire)
+std::vector<Lexique*> Lexique::creerLexique(const char * repertoire)
 {
-	auto automates = std::vector<Automate*>();
+	auto automates = std::vector<Lexique*>();
 	DIR* dir = opendir(repertoire);
 	if (dir)
 	{
@@ -113,7 +113,7 @@ std::vector<Automate*> Automate::creerLexique(const char * repertoire)
 				std::string filename = repertoire;
 				filename += '/';
 				filename += +file->d_name;
-				auto a = Automate::lireLexique(filename.c_str());
+				auto a = Lexique::lireLexique(filename.c_str());
 				if (a) automates.push_back(a);
 			}
 				
@@ -124,7 +124,7 @@ std::vector<Automate*> Automate::creerLexique(const char * repertoire)
 	// retour par copie, mais ce sont des pointeurs d'automates
 	return automates;
 }
-std::ostream & operator<<(std::ostream & os, const Automate & a)
+std::ostream & operator<<(std::ostream & os, const Lexique & a)
 {
 
 	os << "\n\n Affichage automate\n";
